@@ -5,7 +5,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Document</title>
+	<title>DOC</title>
 	<?php include_once("bootstrap.php"); ?>
 </head>
 <body class="main_background">
