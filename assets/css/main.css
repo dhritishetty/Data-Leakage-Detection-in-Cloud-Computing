@@ -14,3 +14,12 @@ body{
 	background-image: url("../background/bg_dashboard.jpg") !important;
 	background-size: cover;
 }
+/* Add this to /assets/css/main.css */
+.btn {
+    padding: 10px 20px;
+    margin: 5px;
+}
+
+.btn i {
+    margin-right: 5px;
+}

@@ -165,9 +165,21 @@ $filename = $row['file_name'];
 $url="../assets/files/$filename";
 $ext=pathinfo($url, PATHINFO_EXTENSION);
 if($ext=="pdf"){
-$url="../download_with_watermark.php?name=$filename#toolbar=0";
-header("Location:$url");
-exit();
+    // Show both view and download options
+    echo '<div class="container mt-4">';
+    echo '<div class="row justify-content-center">';
+    echo '<div class="col-md-6 text-center">';
+    
+    // View button/link
+    echo '<a href="../download_with_watermark.php?name='.$filename.'#toolbar=0" class="btn btn-primary m-2">';
+    echo '<i class="fas fa-eye"></i> View File</a>';
+    
+    // Download button/link
+    echo '<a href="download_file.php?name='.$filename.'&download=true" class="btn btn-success m-2">';
+    echo '<i class="fas fa-download"></i> Download File</a>';
+    
+    echo '</div></div></div>';
+    exit();
 }
 else{
 // File to download other files other than PDF

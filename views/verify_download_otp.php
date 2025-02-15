@@ -1,8 +1,15 @@
-<?php 
+<?php
 require_once("../server/connect.php");
 require_once("../session.php");
 require_once("../sanitize.php");
 require_once("hasAccessUser.php");
+require_once("library.php");
+
+// Check if user is logged in
+if(!isset($_SESSION['user_id'])) {
+    header("Location: ../index.php");
+    exit();
+}
 
 // Check if download info exists in session
 if(!isset($_SESSION['download_pending']) || !isset($_SESSION['download_otp'])) {
@@ -13,39 +20,53 @@ if(!isset($_SESSION['download_pending']) || !isset($_SESSION['download_otp'])) {
 if(isset($_POST['verify_otp'])) {
     $entered_otp = sanitize($_POST['otp']);
     $stored_otp = $_SESSION['download_otp'];
+    $otp_time = $_SESSION['otp_time'];
     
-    // Debug line (remove in production)
-    error_log("Entered OTP: " . $entered_otp . " Stored OTP: " . $stored_otp);
-    
-    // Convert both to strings and trim for comparison
-    $stored_otp = (string)trim($stored_otp);
-    $entered_otp = (string)trim($entered_otp);
-    
-    if($entered_otp === $stored_otp) {
-        // OTP verified, process download
+    // Check if OTP is expired (2 minutes validity)
+    if(time() - $otp_time > 120) {
+        echo "<div class='alert alert-danger'>OTP has expired. Please request a new one.</div>";
+        unset($_SESSION['download_otp']);
+        unset($_SESSION['otp_time']);
+        unset($_SESSION['download_pending']);
+    }
+    // Verify OTP
+    else if($entered_otp == $stored_otp) {
+        // Get file information from session
         $file_info = $_SESSION['download_pending'];
         $filename = $file_info['filename'];
+        $filepath = "../assets/files/$filename";
         
         // Clear sensitive session data
         unset($_SESSION['download_otp']);
+        unset($_SESSION['otp_time']);
         unset($_SESSION['download_pending']);
         
-        $url = "../assets/files/$filename";
-        $ext = pathinfo($url, PATHINFO_EXTENSION);
-        
-        if($ext == "pdf") {
-            $url = "../download_with_watermark.php?name=$filename#toolbar=0";
-            header("Location: $url");
-            exit();
+        if(file_exists($filepath)) {
+            // Check if file is PDF
+            $ext = pathinfo($filepath, PATHINFO_EXTENSION);
+            
+            if(strtolower($ext) == 'pdf') {
+                // For PDF files, process through watermark script
+                header("Location: ../download_with_watermark.php?name=" . $filename . "&download=true");
+                exit();
+            } else {
+                // For non-PDF files, direct download
+                header('Content-Type: application/octet-stream');
+                header('Content-Description: File Transfer');
+                header('Content-Disposition: attachment; filename="' . basename($filename) . '"');
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                header('Content-Length: ' . filesize($filepath));
+                
+                ob_clean();
+                flush();
+                readfile($filepath);
+                exit();
+            }
         } else {
-            $contenttype = "application/force-download";
-            header("Content-Type: " . $contenttype);
-            header("Content-Disposition: attachment; filename=\"" . $filename . "\"");
-            readfile("../assets/files/" . $filename);
-            exit();
+            echo "<div class='alert alert-danger'>File not found.</div>";
         }
-    } else {
-        $error_message = "<div class='alert alert-danger'>Invalid OTP. Please try again.</div>";
     }
 }
 ?>
@@ -68,9 +89,7 @@ if(isset($_POST['verify_otp'])) {
                         <h4 class="text-center mb-3">Enter OTP</h4>
                         <p class="text-center">Please enter the OTP sent to your email</p>
                         
-                        <?php if(isset($error_message)) echo $error_message; ?>
-                        
-                        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
+                        <form method="POST">
                             <div class="mb-3">
                                 <input type="number" 
                                        name="otp" 
@@ -82,7 +101,7 @@ if(isset($_POST['verify_otp'])) {
                                 <button type="submit" 
                                         name="verify_otp" 
                                         class="btn btn-primary">
-                                    Verify OTP
+                                    Verify & Download
                                 </button>
                             </div>
                         </form>
