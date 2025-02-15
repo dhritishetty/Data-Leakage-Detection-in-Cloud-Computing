@@ -43,14 +43,35 @@ if(isset($_POST['download'])) {
         
         // Check for leaker status
         $status = checkSecretKeyRequest($row['id'], $_SESSION['user_id']);
-        if($status == "no") {
-            $sql = "UPDATE users SET is_leaker='yes' WHERE id='$user_id'";
-            mysqli_query($conn, $sql);
-            echo "<div class='alert alert-danger'>
-                You have been marked as a leaker.
-            </div>";
-            exit();
-        }
+        $status = checkSecretKeyRequest($row['id'], $_SESSION['user_id']);
+    if($status == "no"){
+ // mark as leaker
+	
+	$subject=$row['subject'];
+	$secret_key=$row['secret_key'];
+	$file_id=$row['id'];
+	$filename=$row['subject'];
+	$fakeFileName=$filename. "_fake";
+	$sql="INSERT INTO leakers(user_id, subject, file_id, secret_key)VALUES('$user_id', '$subject','$file_id','$secret_key')";
+	mysqli_query($conn, $sql);
+	$sql = "INSERT INTO fake_objects_log (original_file, fake_file, created_by, created_at)VALUES ('$filename', '$fakeFileName', '$user_id', NOW())";
+	mysqli_query($conn, $sql);
+
+	createFakeObject($file_id, $user_id, $filename); // Add this line
+
+	
+}
+        // if($status == "no") {
+        //      $sql = " leakers SET is_leaker='yes' WHERE id='$user_id'";
+        // //     // echo "<div class='alert alert-danger'>
+        // //     //     You have been marked as a leaker.
+        // //     // </div>";
+        //      mysqli_query($conn, $sql);
+        // //     // echo "<div class='alert alert-danger'>
+        // //     //     You have been marked as a leaker.
+        // //     // </div>";
+        // //     exit();
+        //  }
 
         // Store file info in session for later use
         $_SESSION['download_pending'] = [
@@ -140,24 +161,24 @@ if(isset($_POST['download'])){
 			$row=mysqli_fetch_array($result);
 
 
-$status = checkSecretKeyRequest($row['id'], $_SESSION['user_id']);
-if($status == "no"){
- // mark as leaker
+// $status = checkSecretKeyRequest($row['id'], $_SESSION['user_id']);
+// if($status == "no"){
+//  // mark as leaker
 	
-	$subject=$row['subject'];
-	$secret_key=$row['secret_key'];
-	$file_id=$row['id'];
-	$filename=$row['subject'];
-	$fakeFileName=$filename. "_fake";
-	$sql="INSERT INTO leakers(user_id, subject, file_id, secret_key)VALUES('$user_id', '$subject','$file_id','$secret_key')";
-	mysqli_query($conn, $sql);
-	$sql = "INSERT INTO fake_objects_log (original_file, fake_file, created_by, created_at)VALUES ('$filename', '$fakeFileName', '$user_id', NOW())";
-	mysqli_query($conn, $sql);
+// 	$subject=$row['subject'];
+// 	$secret_key=$row['secret_key'];
+// 	$file_id=$row['id'];
+// 	$filename=$row['subject'];
+// 	$fakeFileName=$filename. "_fake";
+// 	$sql="INSERT INTO leakers(user_id, subject, file_id, secret_key)VALUES('$user_id', '$subject','$file_id','$secret_key')";
+// 	mysqli_query($conn, $sql);
+// 	$sql = "INSERT INTO fake_objects_log (original_file, fake_file, created_by, created_at)VALUES ('$filename', '$fakeFileName', '$user_id', NOW())";
+// 	mysqli_query($conn, $sql);
 
-	createFakeObject($file_id, $user_id, $filename); // Add this line
+// 	createFakeObject($file_id, $user_id, $filename); // Add this line
 
 	
-}
+// }
 
 
 $filename = $row['file_name'];
