@@ -74,8 +74,8 @@ if(isset($_POST['sendEmail'])){
     $mail->isSMTP();                            // Send using SMTP
     $mail->Host       = 'smtp.gmail.com';       // Set the SMTP server to send through
     $mail->SMTPAuth   = true;                   // Enable SMTP authentication
-    $mail->Username   = 'eschrodinger517@gmail.com'; // SMTP username
-    $mail->Password   = 'eqewadisbelqwwja';          // SMTP password
+    $mail->Username   = 'dhrithigccp@gmail.com'; // SMTP username
+    $mail->Password   = 'cypvexobbgknbdep';          // SMTP password
     $mail->SMTPSecure = 'tls';                  // Enable TLS encryption; `PHPMailer::ENCRYPTION_SMTPS` encouraged
     $mail->Port       = 587;                    // TCP port to connect to
 
@@ -90,20 +90,20 @@ if(isset($_POST['sendEmail'])){
 
     // Content
     $mail->isHTML(true);                       // Set email format to HTML
-    $mail->Subject = 'Phpmailer OTP';
+    $mail->Subject = 'Data-Leakage-Detection OTP';
     if(!isset($_SESSION['user_id']))
     {
-        $mail->Body    = 'This email has been sent using PHP<br>Your OTP to verify your email is '. $otp.
-                        '<br>Do not share this OTP with anyone.';
-        $mail->AltBody = 'This email has been sent using PHP. Your OTP to verify your email is '.$otp.
-                        ' Do not share this OTP with anyone.';
+        $mail->Body    = 'This email has been sent to verify your email. <br> Your OTP is '. $otp.
+                        '<br>OTP will last for 2 minutes. <br> Do not share this OTP with anyone. <br> Regards, <br> Dhrithi.';
+        $mail->AltBody = 'This email has been sent to verify your email. <br> Your OTP is '. $otp.
+                        '<br>OTP will last for 2 minutes. <br> Do not share this OTP with anyone. <br> Regards, <br> Dhrithi.';
     }
     else
     {
-        $mail->Body    = 'This email has been sent using PHP<br>Your OTP to change password in DLD is '. $otp.
-                        '<br>Do not share this OTP with anyone.';
-        $mail->AltBody = 'This email has been sent using PHP. Your OTP to change password in DLD is '.$otp.
-                        ' Do not share this OTP with anyone.';
+        $mail->Body    = 'This email has been sent to change your password. <br> Your OTP is '. $otp.
+                        '<br>OTP will last for 2 minutes. <br> Do not share this OTP with anyone. <br> Regards, <br> Dhrithi.';
+        $mail->AltBody = 'This email has been sent to change your password. <br> Your OTP is '. $otp.
+                        '<br>OTP will last for 2 minutes. <br> Do not share this OTP with anyone. <br> Regards, <br> Dhrithi.';
     }
     
     // $sendresult = ;

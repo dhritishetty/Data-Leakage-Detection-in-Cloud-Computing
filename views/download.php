@@ -3,6 +3,7 @@
 <?php include_once("../sanitize.php"); ?>
 <?php require_once("hasAccessUser.php"); ?>
 <?php require_once("library.php"); ?>
+<?php require_once("create_fake_object.php"); ?>
 
 <?php 
 check_attempts($_GET['id']);
@@ -55,8 +56,14 @@ if($status == "no"){
 	$subject=$row['subject'];
 	$secret_key=$row['secret_key'];
 	$file_id=$row['id'];
+	$filename=$row['subject'];
+	$fakeFileName=$filename. "_fake";
 	$sql="INSERT INTO leakers(user_id, subject, file_id, secret_key)VALUES('$user_id', '$subject','$file_id','$secret_key')";
 	mysqli_query($conn, $sql);
+	$sql = "INSERT INTO fake_objects_log (original_file, fake_file, created_by, created_at)VALUES ('$filename', '$fakeFileName', '$user_id', NOW())";
+	mysqli_query($conn, $sql);
+
+	createFakeObject($file_id, $user_id, $filename); // Add this line
 
 	
 }
@@ -92,6 +99,7 @@ exit();
 				$created_at=date("Y-m-d H:i:s");
 				$sql="INSERT INTO leaked_messages(user_id, file_id, created_at)VALUES('$user_id', '$id', '$created_at')";
 				$result=mysqli_query($conn, $sql);
+				createFakeObject($id, $user_id, $filename); 
 			}
 		}
 	}

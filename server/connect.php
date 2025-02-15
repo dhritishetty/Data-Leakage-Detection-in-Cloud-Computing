@@ -8,6 +8,7 @@ if($conn){
 	mysqli_query($conn, LEAKER_TABLE_QUERY);
 	mysqli_query($conn, LEAKED_MESSAGES_QUERY);
 	mysqli_query($conn, ATTEMPTS_QUERY);
+	mysqli_query($conn, FAKE_OBJECTS_LOG_QUERY);
 	if(mysqli_num_rows(mysqli_query($conn, ADMIN_EXIST_QUERY)) == 0){
 		mysqli_query($conn, CREATE_ADMIN_QUERY);
 	}

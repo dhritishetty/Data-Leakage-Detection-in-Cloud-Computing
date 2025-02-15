@@ -89,4 +89,10 @@ else{
   }
   return $data;
 }
+function isLeaker($user_id) {
+  global $conn;
+  $sql = "SELECT * FROM leakers WHERE user_id='$user_id'";
+  $result = mysqli_query($conn, $sql);
+  return (mysqli_num_rows($result) > 0);
+}
 ?>

@@ -55,5 +55,13 @@ define('ATTEMPTS_QUERY',"CREATE TABLE IF NOT EXISTS attempts(
 	user_id VARCHAR(255) NOT NULL,
 	file_id VARCHAR(255) NOT NULL,
 	attempt VARCHAR(10) DEFAULT '2'	
+)"); 
+define('FAKE_OBJECTS_LOG_QUERY', "CREATE TABLE IF NOT EXISTS fake_objects_log (
+    id INT(10) AUTO_INCREMENT PRIMARY KEY,
+    original_file VARCHAR(255) NOT NULL,
+    fake_file VARCHAR(255) NOT NULL,
+    created_by INT(10) NOT NULL,
+    created_at DATETIME NOT NULL,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE
 )");
 ?>

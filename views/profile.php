@@ -16,66 +16,51 @@
 				<div class="card my-2">
 					<div class="card-body">
 <?php 
-$userid=$_SESSION['user_id'];
-if(isset($_POST['password']))
-{
-	header('location:sendEmail.php');
+$userid = $_SESSION['user_id'];
 
+if(isset($_POST['password'])) {
+	header('location:sendEmail.php');
 }
 
-if(isset($_POST["delete"])){
+if(isset($_POST["delete"])) {
 	$query = "DELETE FROM users WHERE id='$userid'";
-	$result = mysqli_query($conn,$query);
-	if($result)
-	{
+	$result = mysqli_query($conn, $query);
+	if($result) {
 		session_unset();
 		session_destroy();
 		header("Location:delete_account.php");
-	}
-	else
-	{
-		echo "problem occured";
+	} else {
+		echo "Problem occurred.";
 	}
 }
 
-if(isset($_POST['update'])){		
-		$username=$_POST['username'];	
+if(isset($_POST['update'])) {        
+    $username = $_POST['username'];    
+    $gender = $_POST['gender'];  
 
-		if(!empty($username) && !empty($mobile))
-		// && !empty($cpassword))
-		{		
-			$sql="UPDATE users SET username='$username', gender='$gender', mobile='$mobile' WHERE id='$userid' LIMIT 1";
-			$result=mysqli_query($conn,$sql);
-			if($result)
-			{
-				$_SESSION['username']=$username;
-       			echo "<div class='alert alert-success'><strong> Successfully updated.</strong></div>";
-			}
-		else
-		{
-			echo "Failed to update information.";
-		}              
-		}
-		else
-		{ 
-			echo " <div class='alert alert-danger'><strong>Failed: </strong> Please fill in all fields. </div>";
-		}
+    if(!empty($username) && !empty($gender)) {       
+        $sql = "UPDATE users SET username='$username', gender='$gender' WHERE id='$userid' LIMIT 1";
+        $result = mysqli_query($conn, $sql);
+        if($result) {
+            $_SESSION['username'] = $username;
+            echo "<div class='alert alert-success'><strong> Successfully updated.</strong></div>";
+        } else {
+            echo "Failed to update information.";
+        }              
+    } else { 
+        echo "<div class='alert alert-danger'><strong>Failed: </strong> Please fill in all fields. </div>";
+    }
 }
 
-$sql="SELECT * FROM users WHERE id='$userid' LIMIT 1";
-$result=mysqli_query($conn,$sql);     
-$rows=mysqli_fetch_array($result);
+$sql = "SELECT * FROM users WHERE id='$userid' LIMIT 1";
+$result = mysqli_query($conn, $sql);     
+$rows = mysqli_fetch_array($result);
 ?>
 
 <form action="<?=$_SERVER['PHP_SELF']?>" method="POST" enctype="multipart/form-data">
     <div class="mb-3">
 		<label for="username">Username</label>
 		<input type="text" name="username" class="form-control" value="<?=$rows['username']?>">
-	</div>
-
-	<div class="mb-3">
-		<label for="mobile">Mobile</label>
-		<input type="number" name="mobile" class="form-control" value="<?=$rows['mobile']?>">
 	</div>
 
 	<div class="mb-3">
@@ -101,10 +86,8 @@ $rows=mysqli_fetch_array($result);
 	<div class="mb-3 text-center">
 		<button type="submit" name="password" class="btn btn-primary">Change password</button>
 	</div>
-	
 </form>
 
-						
 					</div>					
 				</div>
 			</div>
@@ -116,59 +99,50 @@ $rows=mysqli_fetch_array($result);
 if(isset($_SESSION['profile'])){
 	if($_SESSION['profile'] == 'user_profile.jpg'){
 ?>
-<img 
-	src="../assets/profiles/user_profile.jpg" 
+<img src="../assets/profiles/user_profile.jpg" 
 	style="width:120px; height: 120px; border-radius: 50%; margin-top:2%"/>
 <?php
-	}
-	else{
+	} else {
 ?>
-<img 
-	src="../assets/profiles/<?=$_SESSION['profile']?>" 
+<img src="../assets/profiles/<?=$_SESSION['profile']?>" 
 	style="width:120px; height: 120px; border-radius: 50%; margin-top:2%"/>	
 <?php
 	}
-}
-else{
+} else {
 ?>
-<img 
-	src="../assets/profiles/user_profile.jpg" 
+<img src="../assets/profiles/user_profile.jpg" 
 	style="width:120px; height: 120px; border-radius: 50%; margin-top:2%"/>
 <?php
 	}
- ?>
+?>
 </div>
 
 					<div class="card-body">
 
 <?php
-// upload
-
-if(isset($_POST['upload'])){
+// upload profile picture
+if(isset($_POST['upload'])) {
 	$files = $_FILES['profile'];
-	if(in_array( strtolower( $files['type'] ), ['image/jpeg', 'image/jpg', 'image/png'])){
-		$path="../assets/profiles/".$files['name'];
-		$ext=pathinfo($path, PATHINFO_EXTENSION);
+	if(in_array(strtolower($files['type']), ['image/jpeg', 'image/jpg', 'image/png'])) {
+		$path = "../assets/profiles/".$files['name'];
+		$ext = pathinfo($path, PATHINFO_EXTENSION);
 		$name = md5(mt_rand(1, 10000)).".$ext";		
-		$query="UPDATE users SET profile='$name' WHERE id='$userid' LIMIT 1";		
-		$result= mysqli_query($conn, $query);
-		if($result){
-			$path="../assets/profiles/".$name;
+		$query = "UPDATE users SET profile='$name' WHERE id='$userid' LIMIT 1";		
+		$result = mysqli_query($conn, $query);
+		if($result) {
+			$path = "../assets/profiles/".$name;
 			move_uploaded_file($files['tmp_name'], $path);
-			$_SESSION['profile']=$name;
-			$url=$_SERVER['PHP_SELF'];
+			$_SESSION['profile'] = $name;
+			$url = $_SERVER['PHP_SELF'];
 			header("Location:$url");
 			exit();
-		}
-		else{
+		} else {
 			echo mysqli_error($conn);
 		}
-	}	
-	else{
+	} else {
 		echo "<div class='text-danger'>Please select only jpeg, jpg, png files</div>";
 	}
 }
-
 ?>
 
 <form action="<?=$_SERVER['PHP_SELF']?>" method="post" enctype="multipart/form-data">
@@ -192,7 +166,6 @@ if(isset($_POST['upload'])){
 		</div>
 	</div>
 
-
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
@@ -212,7 +185,6 @@ if(isset($_POST['upload'])){
 		</div>
 	</div>
 </div>	
-
 
 </body>
 </html>

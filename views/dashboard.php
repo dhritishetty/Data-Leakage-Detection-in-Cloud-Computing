@@ -35,6 +35,8 @@ if(isset($_SESSION['user_type'])){
 <a href="display_graphs.php" class="list-group-item"><i class="bi bi-bar-chart-line"></i> Graphs</a>
 <a href="users.php" class="list-group-item"><i class="bi bi-info-circle-fill"></i> User registeration request</a>
 <a href="leaker_user_list.php" class="list-group-item"><i class="bi bi-paint-bucket"></i> Unauthorised access</a>
+<!-- Add this after the existing admin links -->
+<a href="list_of_fake_objects_logs.php" class="list-group-item"><i class="bi bi-journal-text"></i> Fake Objects Log</a>
 <?php
 	}
 	elseif($_SESSION['user_type']=='user'){
