@@ -20,7 +20,16 @@ if(isset($_SESSION['register_email']))
 
 if(isset($_POST['confirmOTP'])){
     $enteredOTP = $_POST['otp'];
-    if($enteredOTP == $otp)
+    $currentTime = time();
+    $otpTime = $_SESSION['otp_timestamp'];
+    
+    // Check if OTP is expired (2 minutes = 120 seconds)
+    if(($currentTime - $otpTime) > 120) {
+        $errmessage = '<div class="alert alert-danger">OTP has expired! Please request a new one.</div>';
+        unset($_SESSION['otp']);
+        unset($_SESSION['otp_timestamp']);
+    }
+    else if($enteredOTP == $otp)
     {
         unset($_SESSION['otp']);
         if(isset($_SESSION['user_id'])){ ///this

@@ -87,40 +87,26 @@ if(isset($_POST['sendEmail'])){
 
     $otp = OTPgenerator();
     $_SESSION['otp']=$otp;
+    $_SESSION['otp_timestamp'] = time(); // Store the generation time
 
     // Content
     $mail->isHTML(true);                       // Set email format to HTML
-<<<<<<< Updated upstream
+
     $mail->Subject = 'Data-Leakage-Detection OTP';
     if(!isset($_SESSION['user_id']))
     {
         $mail->Body    = 'This email has been sent to verify your email. <br> Your OTP is '. $otp.
-                        '<br>OTP will last for 2 minutes. <br> Do not share this OTP with anyone. <br> Regards, <br> Dhrithi.';
+                        '<br>OTP will last for 2 minutes. <br> Do not share this OTP with anyone. <br> Regards, <br> Dhrithi, Nidhi & Sneha.';
         $mail->AltBody = 'This email has been sent to verify your email. <br> Your OTP is '. $otp.
-                        '<br>OTP will last for 2 minutes. <br> Do not share this OTP with anyone. <br> Regards, <br> Dhrithi.';
+                        '<br>OTP will last for 2 minutes. <br> Do not share this OTP with anyone. <br> Regards, <br> Dhrithi, Nidhi & Sneha.';
     }
     else
     {
         $mail->Body    = 'This email has been sent to change your password. <br> Your OTP is '. $otp.
-                        '<br>OTP will last for 2 minutes. <br> Do not share this OTP with anyone. <br> Regards, <br> Dhrithi.';
+                        '<br>OTP will last for 2 minutes. <br> Do not share this OTP with anyone. <br> Regards, <br> Dhrithi, Nidhi & Sneha.';
         $mail->AltBody = 'This email has been sent to change your password. <br> Your OTP is '. $otp.
-                        '<br>OTP will last for 2 minutes. <br> Do not share this OTP with anyone. <br> Regards, <br> Dhrithi.';
-=======
-    $mail->Subject = 'OTP Verification';
-    if(!isset($_SESSION['user_id']))
-    {
-        $mail->Body    = 'Your OTP to verify your email is '. $otp.
-                        '<br>Do not share this OTP with anyone.<br> Regards, <br> Dhrithi, Nidhi & Sneha';
-        $mail->AltBody = 'Your OTP to verify your email is '.$otp.
-                        ' Do not share this OTP with anyone.<br> Regards, <br> Dhrithi, Nidhi & Sneha';
-    }
-    else
-    {
-        $mail->Body    = 'Your OTP to change password is '. $otp.
-                        '<br>Do not share this OTP with anyone.<br> Regards, <br> Dhrithi, Nidhi & Sneha';
-        $mail->AltBody = 'Your OTP to change password is '.$otp.
-                        ' Do not share this OTP with anyone.<br> Regards, <br> Dhrithi, Nidhi & Sneha';
->>>>>>> Stashed changes
+                        '<br>OTP will last for 2 minutes. <br> Do not share this OTP with anyone. <br> Regards, <br> Dhrithi , Nidhi & Sneha.';
+
     }
     
     // $sendresult = ;

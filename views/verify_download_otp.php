@@ -4,19 +4,24 @@ require_once("../session.php");
 require_once("../sanitize.php");
 require_once("hasAccessUser.php");
 
-// Check if download is pending
+// Check if download info exists in session
 if(!isset($_SESSION['download_pending']) || !isset($_SESSION['download_otp'])) {
     header('Location: list_of_received_files.php');
     exit();
 }
 
-$error_message = '';
-
 if(isset($_POST['verify_otp'])) {
     $entered_otp = sanitize($_POST['otp']);
     $stored_otp = $_SESSION['download_otp'];
     
-    if($entered_otp == $stored_otp) {
+    // Debug line (remove in production)
+    error_log("Entered OTP: " . $entered_otp . " Stored OTP: " . $stored_otp);
+    
+    // Convert both to strings and trim for comparison
+    $stored_otp = (string)trim($stored_otp);
+    $entered_otp = (string)trim($entered_otp);
+    
+    if($entered_otp === $stored_otp) {
         // OTP verified, process download
         $file_info = $_SESSION['download_pending'];
         $filename = $file_info['filename'];
@@ -63,7 +68,7 @@ if(isset($_POST['verify_otp'])) {
                         <h4 class="text-center mb-3">Enter OTP</h4>
                         <p class="text-center">Please enter the OTP sent to your email</p>
                         
-                        <?php if($error_message) echo $error_message; ?>
+                        <?php if(isset($error_message)) echo $error_message; ?>
                         
                         <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
                             <div class="mb-3">

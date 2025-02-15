@@ -1,23 +1,15 @@
-<<<<<<< Updated upstream
 <?php require_once("../server/connect.php"); ?>
 <?php include_once("../session.php"); ?>
 <?php include_once("../sanitize.php"); ?>
 <?php require_once("hasAccessUser.php"); ?>
 <?php require_once("library.php"); ?>
 <?php require_once("create_fake_object.php"); ?>
-=======
 <?php
-require_once("../server/connect.php");
-require_once("../session.php");
-require_once("../sanitize.php");
-require_once("hasAccessUser.php");
-require_once("library.php");
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 require '../vendor/PHPMailer/src/Exception.php';
 require '../vendor/PHPMailer/src/PHPMailer.php';
 require '../vendor/PHPMailer/src/SMTP.php';
->>>>>>> Stashed changes
 
 function checkSecretKeyRequest($id, $user_id){
 	global $conn;
@@ -78,6 +70,12 @@ if(isset($_POST['download'])) {
         $_SESSION['download_otp'] = $otp;
         $_SESSION['otp_time'] = time(); // Store OTP generation time
         
+        // Store file info in session
+        $_SESSION['download_pending'] = [
+            'file_id' => $id,
+            'filename' => $row['file_name'],
+            'secret_key' => $secret_key
+        ];
         // Send OTP via email
         try {
             $mail = new PHPMailer(true);
@@ -122,7 +120,7 @@ if(isset($_POST['download'])) {
     <?php include_once("bootstrap.php"); ?>
 </head>
 <body class="dashboard_background">
-<<<<<<< Updated upstream
+
 	<?php include_once("menubar.php"); ?>
 <div class="container">
 	<div class="row">
@@ -213,35 +211,6 @@ exit();
 		</div>
 	</div>
 </div>
-=======
-    <?php include_once("menubar.php"); ?>
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-4 mx-auto">
-                <div class="card my-5">
-                    <div class="card-body">
-                        <h4 class="text-center mb-3">Enter Secret Key</h4>
-                        <form action="<?php echo $_SERVER['PHP_SELF'] . "?id=" . $_GET['id']; ?>" method="POST">
-                            <div class="mb-3">
-                                <input type="number" 
-                                       name="secret_key" 
-                                       class="form-control" 
-                                       placeholder="Enter secret key"
-                                       required>
-                            </div>
-                            <div class="mb-3 text-center">
-                                <button type="submit" 
-                                        name="download" 
-                                        class="btn btn-primary">
-                                    Submit
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
->>>>>>> Stashed changes
+
 </body>
 </html>
