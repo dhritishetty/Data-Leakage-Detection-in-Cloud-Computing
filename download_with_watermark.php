@@ -71,7 +71,14 @@ for ($i = 1; $i <= $pages_count; $i++) {
     // Call addWatermark with a diagonal angle (e.g., 45 degrees) from bottom-left to top-right
     addWatermark(0, $pageHeight, $watermarkText, 45, $pdf); // Start from bottom-left corner
 }
+header('Content-Type: application/pdf');
+header('Content-Disposition: attachment; filename="watermarked.pdf"');
+header('Cache-Control: private, must-revalidate, max-age=0');
+header('Pragma: public');
 
+// Output the file as a forced download
+$pdf->Output('D', 'watermarked.pdf');
+exit;
 // Step 4: Output the file with the embedded watermark
-$pdf->Output();
+// $pdf->Output();
 ?>
