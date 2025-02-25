@@ -2,6 +2,7 @@
 use setasign\Fpdi\Fpdi;
 use setasign\Fpdi\Fpdf;
 require_once('vendor/autoload.php');
+require_once('server/connect.php');
 
 session_start();
 
@@ -71,14 +72,47 @@ for ($i = 1; $i <= $pages_count; $i++) {
     // Call addWatermark with a diagonal angle (e.g., 45 degrees) from bottom-left to top-right
     addWatermark(0, $pageHeight, $watermarkText, 45, $pdf); // Start from bottom-left corner
 }
+// Get the original filename without extension
+$originalFilename = pathinfo($_GET["name"], PATHINFO_FILENAME);
+// Check if user is a leaker
+$isLeaker = false;
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+    
+    // Get file_id from the filename
+    $filename = $_GET["name"];
+    $sql = "SELECT id FROM data_files WHERE file_name = '$filename'";
+    $result = mysqli_query($conn, $sql);
+    
+    if ($result && mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_array($result);
+        $file_id = $row['id'];
+        
+        // Check if user is marked as a leaker for this file
+        $leakerQuery = "SELECT * FROM leakers WHERE user_id='$user_id' AND file_id='$file_id'";
+        $leakerResult = mysqli_query($conn, $leakerQuery);
+        
+        if ($leakerResult && mysqli_num_rows($leakerResult) > 0) {
+            $isLeaker = true;
+        }
+    }
+}
+
+// Set the appropriate filename based on leaker status
+if ($isLeaker) {
+    $outputFilename = $originalFilename . "_fake_watermarked.pdf";
+} else {
+    $outputFilename = $originalFilename . "_watermarked.pdf";
+}
+
+// $watermarkedFilename = $originalFilename . "_watermarked.pdf";
+
 header('Content-Type: application/pdf');
-header('Content-Disposition: attachment; filename="watermarked.pdf"');
+header('Content-Disposition: attachment; filename="' . $outputFilename . '"');
 header('Cache-Control: private, must-revalidate, max-age=0');
 header('Pragma: public');
 
 // Output the file as a forced download
-$pdf->Output('D', 'watermarked.pdf');
-exit;
-// Step 4: Output the file with the embedded watermark
-// $pdf->Output();
+$pdf->Output('D', $outputFilename);
+exit();
 ?>

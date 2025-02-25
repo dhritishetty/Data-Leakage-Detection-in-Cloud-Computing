@@ -48,7 +48,12 @@ File size must be less than 10 mb.
      		$secretkey=mt_rand(1000,9999);
 
 
-    $filename=md5(mt_rand(1,10000)).".$ext";
+//     // Convert subject to a valid filename (remove special characters)
+// $clean_subject = preg_replace('/[^A-Za-z0-9_\-]/', '_', $subject);
+// // Add a unique identifier to prevent filename conflicts
+// $filename = $clean_subject. ".$ext";
+// Use the original filename from the upload
+$filename = $_FILES['file']['name'];
     $url="../assets/files/$filename";
 
 // $date_time=date("Y-m-d H:i:s");
